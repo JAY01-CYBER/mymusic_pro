@@ -2,43 +2,42 @@ name: Flutter CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # 1. Checkout repo
+      - uses: actions/checkout@v3
 
+      # 2. Setup Java (needed for Gradle + Kotlin)
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # 3. Setup Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0' # Tumhari Flutter version
+          flutter-version: '3.13.0'
 
-      - name: Regenerate project (ensure Gradle files exist)
-        run: flutter create .
-
+      # 4. Get dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build release APK
-        run: flutter build apk --release
+      # 5. Build release APK
+      - name: Build APK
+        run: flutter build apk --release --no-shrink
 
-      # ✅ Direct Actions logs se download karne ke liye
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+      # 6. Upload APK as artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
         with:
-          name: mymusic_pro-apk
+          name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-
-      # ✅ GitHub Release pe bhi upload hoga (optional)
-      - name: Upload APK to GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: build/app/outputs/flutter-apk/app-release.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
