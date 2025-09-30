@@ -1,0 +1,24 @@
+name: mymusic_pro
+description: A smooth Material 3 music app with animations and online playback.
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  just_audio: ^0.9.42
+  audio_session: ^0.1.21
+  provider: ^6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/hero_banner.png
